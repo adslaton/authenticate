@@ -10,7 +10,7 @@ var express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
     config = require('./config.js'),
-    server;
+    routes = require('./routes');
 
 // ===============EXPRESS================
 // Configure Express
@@ -46,10 +46,9 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/', function (req, res) {
-    res.send('Hello world');
-});
+// Routes
+app.use('/', routes);
 
-server = app.listen(config.port, function () {
+app.listen(config.port, function () {
     console.log('Authenticate is listening on port:%s', config.port);
 });
