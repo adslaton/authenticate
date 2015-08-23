@@ -13,7 +13,8 @@ A basic authentication service built with:
 - Define config.js
 ```
 module.exports = {
-    key: 'YOUR_ORCHESTRATE_KEY'
+    key: 'YOUR_ORCHESTRATE_KEY',
+    port: 5800
 };
 ```
 
