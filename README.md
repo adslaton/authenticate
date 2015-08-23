@@ -14,7 +14,7 @@ A basic authentication service built with:
 ```
 module.exports = {
     key: 'YOUR_ORCHESTRATE_KEY',
-    port: 5800
+    port: process.env.PORT || 5800
 };
 ```
 
