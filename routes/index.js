@@ -1,27 +1,100 @@
 'use strict';
 
 var express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    passport = require('passport'),
+    Account = require('../models/account');
 
 router.get('/_hc', function (req, res, next) {
-    res.json({status: 200});
+    res.status(200).json({status: 200});
 });
 
-router.get('/login', function (req, res, next) {
-    res.json({status: 200, type: 'login'});
+router.get('/login', function (req, res) {
+    res.json(200, {user: req.user});
 });
 
-router.post('/signup', function (req, res, next) {
-    var body = req.body;
-    
-    res.json({status: 200, data: body}); 
+router.post('/login', passport.authenticate('local'), function (req, res) {
+    res.status(200).json({
+        status: 200,
+        authenticate: true,
+        username: req.body.username,
+        message: 'login'
+    });
 });
+
+router.get('/logout', function (req, res) {
+    req.logout();
+    res.status(200).json({
+        status: 200,
+        authenticate: false,
+        username: req.body.username,
+        message: 'logout'
+    });
+});
+
+router.post('/register', function (req, res) {
+    Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
+        if (err) {
+            return res.json(500, {status: 500, account: account});
+        }
+
+        passport.authenticate('local')(req, res, function () {
+            return res.status(200).json({
+                status: 200,
+                authenticate: true,
+                username: req.body.username,
+                message: 'register'
+            });
+        });
+    });
+});
+
+router.post('/reset', function (req, res) {
+    var username = req.body.username;
+
+    Account.findOne({username: username}, function (findError, account) {
+        if (findError) {
+            return res.status(500).json({
+                status: 500,
+                message: findError
+            });
+        }
+        account.setPassword(req.body.password, function (resetError, resetAccount) {
+            if (resetError) {
+                return res.status(500).json({
+                    status: 500,
+                    authenticate: false,
+                    username: username,
+                    message: resetError
+                });
+            }
+            account.save(function (saveError) {
+                if (saveError) {
+                    return res.status(500).json({
+                        status: 500,
+                        authenticate: true,
+                        username: username,
+                        message: saveError
+                    });
+                }
+                return res.status(200).json({
+                    status: 200,
+                    authenticate: true,
+                    username: username,
+                    message: 'reset'
+                });
+            });
+        });
+    });
+});
+
+
 
 router.post('/update/:id', function (req, res, next) {
     var id = req.params.id,
         body = req.body;
-    
-    res.json({status: 200, id: id, data: body});
-})
+
+    res.status(200).json({status: 200, id: id, data: body});
+});
 
 module.exports = router;

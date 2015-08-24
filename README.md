@@ -4,8 +4,8 @@ A basic authentication service built with:
 
 - [Node.js][node]
 - [Express][express]
+- [Mongo][mongo]
 - [Passport][passport]
-- [Orchestrate][orchestrate]
 
 ## Setup
 
@@ -13,7 +13,7 @@ A basic authentication service built with:
 - Define config.js
 ```
 module.exports = {
-    key: 'YOUR_ORCHESTRATE_KEY',
+    mongo: 'YOUR_MONGO_URL',
     port: process.env.PORT || 5800
 };
 ```
@@ -21,5 +21,5 @@ module.exports = {
 
 [node]: https://nodejs.org
 [express]: http://expressjs.com/
+[mongo]: https://www.mongodb.org/
 [passport]: http://passportjs.org/
-[orchestrate]: https://orchestrate.io/
