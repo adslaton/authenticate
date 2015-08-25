@@ -3,7 +3,6 @@
 var express = require('express'),
     app = express(),
     logger = require('morgan'),
-    cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     session = require('express-session'),
     passport = require('passport'),
@@ -40,12 +39,10 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'POST,GET,DELETE,OPTIONS');
     next();
 });
-app.use(cookieParser('copa air'));
 app.use(session({
     secret: 'copa air',
     resave: false,
-    saveUninitialized: true,
-    cookie: {secure: true}
+    saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
