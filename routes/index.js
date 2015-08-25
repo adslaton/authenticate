@@ -13,8 +13,12 @@ router.get('/fail', function (req, res) {
     res.json({authenticate: false});
 });
 
+router.get('/success', function (req, res) {
+    res.json({authenticate: true});
+});
+
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
+    successRedirect: '/authenticate/success',
     failureRedirect: '/authenticate/fail'
 }));
 
@@ -31,17 +35,13 @@ router.get('/logout', function (req, res) {
 router.post('/register', function (req, res) {
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
         if (err) {
-            return res.json(500, {status: 500, account: account});
+            return res.json({authenticate: false, register: false});
         }
 
-        passport.authenticate('local')(req, res, function () {
-            return res.json({
-                status: 200,
-                authenticate: true,
-                username: req.body.username,
-                message: 'register'
-            });
-        });
+        passport.authenticate('local', {
+            successRedirect: '/authenticate/success',
+            failureRedirect: '/authenticate/fail'
+        }));
     });
 });
 
@@ -84,13 +84,5 @@ router.post('/reset', function (req, res) {
     });
 });
 
-
-
-router.post('/update/:id', function (req, res, next) {
-    var id = req.params.id,
-        body = req.body;
-
-    res.status(200).json({status: 200, id: id, data: body});
-});
 
 module.exports = router;
