@@ -9,22 +9,18 @@ router.get('/_hc', function (req, res, next) {
     res.status(200).json({status: 200});
 });
 
-router.get('/login', function (req, res) {
-    res.json(200, {user: req.user});
+router.get('/fail', function (req, res) {
+    res.json({authenticate: false});
 });
 
-router.post('/login', passport.authenticate('local'), function (req, res) {
-    res.status(200).json({
-        status: 200,
-        authenticate: true,
-        username: req.body.username,
-        message: 'login'
-    });
-});
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/authenticate/fail'
+}));
 
 router.get('/logout', function (req, res) {
     req.logout();
-    res.status(200).json({
+    res.json({
         status: 200,
         authenticate: false,
         username: req.body.username,
@@ -39,7 +35,7 @@ router.post('/register', function (req, res) {
         }
 
         passport.authenticate('local')(req, res, function () {
-            return res.status(200).json({
+            return res.json({
                 status: 200,
                 authenticate: true,
                 username: req.body.username,
@@ -77,7 +73,7 @@ router.post('/reset', function (req, res) {
                         message: saveError
                     });
                 }
-                return res.status(200).json({
+                return res.json({
                     status: 200,
                     authenticate: true,
                     username: username,
