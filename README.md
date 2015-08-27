@@ -15,9 +15,17 @@ A basic authentication service built with:
 module.exports = {
 	email: true
     mongo: 'YOUR_MONGO_URL',
-    port: process.env.PORT || 5800
+    port: process.env.PORT || 5800,
+    sendMail: {
+        from: 'SENDERS_EMAIL',
+        subject: 'SUBJECT LINE'
+    }
 };
 ```
+
+## Assumptions
+
+- If email is enabled, it is assumed that smpt is listening on port 25
 
 
 [node]: https://nodejs.org

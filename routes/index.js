@@ -13,17 +13,23 @@ if (config.email) {
     transporter = nodemailer.createTransport();
 }
 
+/**
+ * Sends an email to a user so they can retreive their password
+ */ 
 function sendMail (req) {
     transporter.sendMail({
-        from: 'seguridad@copaair.com',
+        from: config.sendMail.from,
         to: req.body.username,
-        subject: 'Copaair Portal account',
+        subject: config.sendMail.subject,
         text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
     });
 }
 
 router.get('/_hc', function (req, res, next) {
-    res.json({status: 200});
+    res.json({
+        status: 200,
+        name: 'authenticate'
+    });
 });
 
 router.post('/login', function (req, res, next) {
