@@ -3,24 +3,46 @@
 var express = require('express'),
     router = express.Router(),
     passport = require('passport'),
-    Account = require('../models/account');
+    Account = require('../models/account'),
+    host = 'http://copaseguridad.com/authenticate',
+    nodemailer = require('nodemailer'),
+    config = require('../config.js'),
+    transporter;
+
+if (config.email) {
+    transporter = nodemailer.createTransport();
+}
+
+function sendMail (req) {
+    transporter.sendMail({
+        from: 'seguridad@copaair.com',
+        to: req.body.username,
+        subject: 'Copaair Portal account',
+        text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
+    });
+}
 
 router.get('/_hc', function (req, res, next) {
-    res.status(200).json({status: 200});
+    res.json({status: 200});
 });
 
-router.get('/fail', function (req, res) {
-    res.json({authenticate: false});
-});
+router.post('/login', function (req, res, next) {
+    Account.findOne(new Account({username: req.body.username}), req.body.password, function (err, account) {
+        if (err) {
+            return res.json({authenticate: false, login: false, error: err.message});
+        }
 
-router.get('/success', function (req, res) {
-    res.json({authenticate: true});
+        passport.authenticate('local', function(err, user, info) {
+            if (err) {
+                return res.json({authenticate: false, login: false, message: err.message});
+            }
+            if (!user) { 
+                return res.json({authenticate: false, login: false});
+            }
+            return res.json({authenticate: true, login: true});
+        })(req, res, next);
+    });
 });
-
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/authenticate/success',
-    failureRedirect: '/authenticate/fail'
-}));
 
 router.get('/logout', function (req, res) {
     req.logout();
@@ -32,23 +54,32 @@ router.get('/logout', function (req, res) {
     });
 });
 
-router.post('/register', function (req, res) {
+router.post('/register', function (req, res, next) {
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
         if (err) {
-            return res.json({authenticate: false, register: false});
+            return res.json({authenticate: false, register: false, error: err.message});
         }
 
-        passport.authenticate('local', {
-            successRedirect: '/authenticate/success',
-            failureRedirect: '/authenticate/fail'
-        }));
+        passport.authenticate('local', function(err, user, info) {
+            if (err) {
+                return res.json({authenticate: false, register: false, message: err.message});
+            }
+            if (!user) { 
+                return res.json({authenticate: false, register: false});
+            }
+            if (config.email) {
+                sendMail(req);
+            }
+            return res.json({authenticate: true, register: true});
+        })(req, res, next);
     });
 });
 
 router.post('/reset', function (req, res) {
-    var username = req.body.username;
+    var username = req.body.username,
+        passphrase = req.body.passphrase;
 
-    Account.findOne({username: username}, function (findError, account) {
+    Account.findOne({username: username, passphrase: passphrase}, function (findError, account) {
         if (findError) {
             return res.status(500).json({
                 status: 500,
@@ -72,6 +103,9 @@ router.post('/reset', function (req, res) {
                         username: username,
                         message: saveError
                     });
+                }
+                if (config.email) {
+                    sendMail(req);
                 }
                 return res.json({
                     status: 200,
