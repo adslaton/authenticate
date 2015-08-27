@@ -13,6 +13,7 @@ A basic authentication service built with:
 - Define config.js
 ```
 module.exports = {
+	email: true
     mongo: 'YOUR_MONGO_URL',
     port: process.env.PORT || 5800
 };
