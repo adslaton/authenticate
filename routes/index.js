@@ -4,7 +4,6 @@ var express = require('express'),
     router = express.Router(),
     passport = require('passport'),
     Account = require('../models/account'),
-    host = 'http://copaseguridad.com/authenticate',
     nodemailer = require('nodemailer'),
     config = require('../config.js'),
     transporter;
