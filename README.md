@@ -32,26 +32,26 @@ module.exports = {
 
 - path /login
 - method POST
-- data {username: <username>, password: <password>}
+- data {username: [username], password: [password]}
 
 
 ### Login out
 
 - path /logout
 - method POST
-- data {username: <username>}
+- data {username: [username]}
 
 ### Register
 
 - path /register
 - method POST
-- data {username: <username>, password: <password>}
+- data {username: [username], password: [password]}
 
 ### Pasword Reset
 
 - path /reset
 - method POST 
-- data {username: <username>}
+- data {username: [username]}
 
 
 [node]: https://nodejs.org
