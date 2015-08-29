@@ -49,7 +49,7 @@ module.exports = {
 
 ### Pasword Reset
 
-- path /resetError
+- path /reset
 - method POST 
 - data {username: <username>}
 
