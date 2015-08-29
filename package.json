@@ -1,7 +1,7 @@
 {
  "name": "authenticate",
- "description": "A basic authentication service",
- "version": "0.0.1",
+ "description": "An authentication service",
+ "version": "0.0.2",
  "main": "index.js",
  "dependencies": {
    "express": "4.13.3",
