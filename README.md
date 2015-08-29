@@ -9,16 +9,15 @@ A basic authentication service built with:
 
 ## Setup
 
-- Create config.js in the root
-- Define config.js
+- Define environment variables to be used in the configuration file (config.js)
 ```
 module.exports = {
-	email: true
-    mongo: 'YOUR_MONGO_URL',
+    email: process.env.EMAIL || false,
+    mongo: process.env.MONGO_URL,
     port: process.env.PORT || 5800,
     sendMail: {
-        from: 'SENDERS_EMAIL',
-        subject: 'SUBJECT LINE'
+        from: '',
+        subject: ''
     }
 };
 ```
