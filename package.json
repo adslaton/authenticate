@@ -1,7 +1,8 @@
 {
  "name": "authenticate",
  "description": "An authentication service",
- "version": "0.0.2",
+ "version": "0.0.3",
+ "license": "(MIT)",
  "main": "index.js",
  "dependencies": {
    "express": "4.13.3",

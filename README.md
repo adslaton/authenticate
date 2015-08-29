@@ -26,6 +26,33 @@ module.exports = {
 
 - If email is enabled, it is assumed that smpt is listening on port 25
 
+## API
+
+### Login
+
+- path /login
+- method POST
+- data {username: <username>, password: <password>}
+
+
+### Login out
+
+- path /logout
+- method POST
+- data {username: <username>}
+
+### Register
+
+- path /register
+- method POST
+- data {username: <username>, password: <password>}
+
+### Pasword Reset
+
+- path /resetError
+- method POST 
+- data {username: <username>}
+
 
 [node]: https://nodejs.org
 [express]: http://expressjs.com/

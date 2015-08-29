@@ -49,7 +49,7 @@ router.post('/login', function (req, res, next) {
     });
 });
 
-router.get('/logout', function (req, res) {
+router.post('/logout', function (req, res) {
     req.logout();
     res.json({
         status: 200,
@@ -81,10 +81,9 @@ router.post('/register', function (req, res, next) {
 });
 
 router.post('/reset', function (req, res) {
-    var username = req.body.username,
-        passphrase = req.body.passphrase;
+    var username = req.body.username;
 
-    Account.findOne({username: username, passphrase: passphrase}, function (findError, account) {
+    Account.findOne({username: username}, function (findError, account) {
         if (findError) {
             return res.status(500).json({
                 status: 500,
