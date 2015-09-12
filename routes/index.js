@@ -27,7 +27,9 @@ function sendMail (req) {
 router.get('/_hc', function (req, res, next) {
     res.json({
         status: 200,
-        name: 'authenticate'
+        email: config.email,
+        name: 'authenticate',
+        port: config.port
     });
 });
 
@@ -44,7 +46,7 @@ router.post('/login', function (req, res, next) {
             if (!user) { 
                 return res.json({authenticate: false, login: false});
             }
-            return res.json({authenticate: true, login: true});
+            return res.json({authenticate: true, login: true, username: req.body.username});
         })(req, res, next);
     });
 });
@@ -75,7 +77,7 @@ router.post('/register', function (req, res, next) {
             if (config.email) {
                 sendMail(req);
             }
-            return res.json({authenticate: true, register: true});
+            return res.json({authenticate: true, register: true, username: req.body.username});
         })(req, res, next);
     });
 });
