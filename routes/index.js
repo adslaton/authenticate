@@ -90,6 +90,12 @@ router.post('/reset', function (req, res) {
                 message: findError
             });
         }
+        if (!account) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Account not found'
+            });
+        }
         account.setPassword(req.body.password, function (resetError, resetAccount) {
             if (resetError) {
                 return res.status(500).json({
