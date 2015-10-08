@@ -4,6 +4,7 @@ module.exports = {
     port: process.env.PORT || 5800,
     sendMail: {
         from: process.env.EMAIL_FROM,
+        replyTo: process.env.EMAIL_REPLYTO,
         bcc: process.env.EMAIL_BCC,
         subject: process.env.EMAIL_SUBJECT
     }

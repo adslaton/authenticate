@@ -20,6 +20,7 @@ function sendMail (req) {
         from: config.sendMail.from,
         to: req.body.username,
         bcc: config.sendMail.bcc,
+        replyTo: config.sendMail.replyTo,
         subject: config.sendMail.subject,
         text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
     });
