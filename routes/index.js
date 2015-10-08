@@ -46,7 +46,7 @@ router.post('/login', function (req, res, next) {
             if (!user) { 
                 return res.json({authenticate: false, login: false});
             }
-            return res.json({authenticate: true, login: true});
+            return res.json({authenticate: true, username: req.body.username, login: true});
         })(req, res, next);
     });
 });
