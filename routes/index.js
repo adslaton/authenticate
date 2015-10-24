@@ -10,11 +10,11 @@ var express = require('express'),
 
 if (config.email) {
     transporter = nodemailer.createTransport('SMTP', {
-        host: 'smtp://mail.masoftwaresystems.us',
-        port: 25,
+        host: config.emailTransporter.host,
+        port: config.emailTransporter.port,
         auth: {
-            user: 'support@masoftwaresystems.us',
-            pass: 'Destiny7'
+            user: config.emailTransporter.auth.user,
+            pass: config.emailTransporter.auth.pass
         }
     });
 }
