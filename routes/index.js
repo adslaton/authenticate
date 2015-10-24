@@ -5,19 +5,21 @@ var express = require('express'),
     passport = require('passport'),
     Account = require('../models/account'),
     nodemailer = require('nodemailer'),
+    smtpTransport = require('nodemailer-smtp-transport'),
     config = require('../config.js'),
     transporter;
 
 if (config.email && config.email.enabled) {
-    if (config.email.enableSMTP) {
-        transporter = nodemailer.createTransport('SMTP', {
+    if (config.email.enableSMTP === 1) {
+        var options = {
             host: config.email.transporter.host,
             port: config.email.transporter.port,
             auth: {
                 user: config.email.transporter.auth.user,
                 pass: config.email.transporter.auth.pass
             }
-        });
+        };
+        transporter = nodemailer.createTransport(smtpTransport(options));
     } else {
         transporter = nodemailer.createTransport();
     }
