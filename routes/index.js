@@ -12,7 +12,6 @@ if (config.email) {
     transporter = nodemailer.createTransport('SMTP', {
         host: 'mail.masoftwaresystems.us',
         port: 25,
-        secureConnection: true,
         auth: {
             user: 'support@masoftwaresystems.us',
             pass: 'Destiny7'
