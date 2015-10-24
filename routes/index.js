@@ -10,7 +10,7 @@ var express = require('express'),
 
 if (config.email) {
     transporter = nodemailer.createTransport('SMTP', {
-        host: 'mail.masoftwaresystems.us',
+        host: 'smtp://mail.masoftwaresystems.us',
         port: 25,
         auth: {
             user: 'support@masoftwaresystems.us',
