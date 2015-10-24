@@ -8,15 +8,19 @@ var express = require('express'),
     config = require('../config.js'),
     transporter;
 
-if (config.email) {
-    transporter = nodemailer.createTransport('SMTP', {
-        host: config.emailTransporter.host,
-        port: config.emailTransporter.port,
-        auth: {
-            user: config.emailTransporter.auth.user,
-            pass: config.emailTransporter.auth.pass
-        }
-    });
+if (config.email && config.email.enabled) {
+    if (config.email.enableSMTP) {
+        transporter = nodemailer.createTransport('SMTP', {
+            host: config.email.transporter.host,
+            port: config.email.transporter.port,
+            auth: {
+                user: config.email.transporter.auth.user,
+                pass: config.email.transporter.auth.pass
+            }
+        });
+    } else {
+        transporter = nodemailer.createTransport();
+    }
 }
 
 /**
@@ -24,11 +28,11 @@ if (config.email) {
  */ 
 function sendMail (req) {
     transporter.sendMail({
-        from: config.sendMail.from,
+        from: config.email.sendMail.from,
         to: req.body.username,
-        bcc: config.sendMail.bcc,
-        replyTo: config.sendMail.replyTo,
-        subject: config.sendMail.subject,
+        bcc: config.email.sendMail.bcc,
+        replyTo: config.email.sendMail.replyTo,
+        subject: config.email.sendMail.subject,
         text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
     });
 }
@@ -81,7 +85,7 @@ router.post('/register', function (req, res, next) {
             if (!user) { 
                 return res.json({authenticate: false, register: false});
             }
-            if (config.email) {
+            if (config.email && config.email.enabled) {
                 sendMail(req);
             }
             return res.json({authenticate: true, register: true});
@@ -123,7 +127,7 @@ router.post('/reset', function (req, res) {
                         message: saveError
                     });
                 }
-                if (config.email) {
+                if (config.email && config.email.enabled) {
                     sendMail(req);
                 }
                 return res.json({
