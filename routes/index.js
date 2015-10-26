@@ -42,9 +42,8 @@ function sendMail (req) {
 router.get('/_hc', function (req, res, next) {
     res.json({
         status: 200,
-        email: config.email,
         name: 'authenticate',
-        port: config.port
+        env: process.env
     });
 });
 
@@ -61,11 +60,7 @@ router.post('/login', function (req, res, next) {
             if (!user) { 
                 return res.json({authenticate: false, login: false});
             }
-<<<<<<< HEAD
-            return res.json({authenticate: true, login: true, username: req.body.username});
-=======
             return res.json({authenticate: true, username: req.body.username, login: true});
->>>>>>> 44ea3562305ca58988eda829bdf0f6c9092ca2d6
         })(req, res, next);
     });
 });
