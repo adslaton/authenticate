@@ -42,8 +42,8 @@ function sendMail (req) {
 router.get('/_hc', function (req, res, next) {
     res.json({
         status: 200,
-        name: 'authenticate',
-        env: process.env
+        email: config.email,
+        name: 'authenticate'
     });
 });
 
