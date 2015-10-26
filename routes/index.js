@@ -5,11 +5,24 @@ var express = require('express'),
     passport = require('passport'),
     Account = require('../models/account'),
     nodemailer = require('nodemailer'),
+    smtpTransport = require('nodemailer-smtp-transport'),
     config = require('../config.js'),
     transporter;
 
-if (config.email) {
-    transporter = nodemailer.createTransport();
+if (config.email && config.email.enabled) {
+    if (config.email.enableSMTP === 1) {
+        var options = {
+            host: config.email.transporter.host,
+            port: config.email.transporter.port,
+            auth: {
+                user: config.email.transporter.auth.user,
+                pass: config.email.transporter.auth.pass
+            }
+        };
+        transporter = nodemailer.createTransport(smtpTransport(options));
+    } else {
+        transporter = nodemailer.createTransport();
+    }
 }
 
 /**
@@ -17,9 +30,11 @@ if (config.email) {
  */ 
 function sendMail (req) {
     transporter.sendMail({
-        from: config.sendMail.from,
+        from: config.email.sendMail.from,
         to: req.body.username,
-        subject: config.sendMail.subject,
+        bcc: config.email.sendMail.bcc,
+        replyTo: config.email.sendMail.replyTo,
+        subject: config.email.sendMail.subject,
         text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
     });
 }
@@ -46,7 +61,11 @@ router.post('/login', function (req, res, next) {
             if (!user) { 
                 return res.json({authenticate: false, login: false});
             }
+<<<<<<< HEAD
             return res.json({authenticate: true, login: true, username: req.body.username});
+=======
+            return res.json({authenticate: true, username: req.body.username, login: true});
+>>>>>>> 44ea3562305ca58988eda829bdf0f6c9092ca2d6
         })(req, res, next);
     });
 });
@@ -74,7 +93,7 @@ router.post('/register', function (req, res, next) {
             if (!user) { 
                 return res.json({authenticate: false, register: false});
             }
-            if (config.email) {
+            if (config.email && config.email.enabled) {
                 sendMail(req);
             }
             return res.json({authenticate: true, register: true, username: req.body.username});
@@ -90,6 +109,12 @@ router.post('/reset', function (req, res) {
             return res.status(500).json({
                 status: 500,
                 message: findError
+            });
+        }
+        if (!account) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Account not found'
             });
         }
         account.setPassword(req.body.password, function (resetError, resetAccount) {
@@ -110,7 +135,7 @@ router.post('/reset', function (req, res) {
                         message: saveError
                     });
                 }
-                if (config.email) {
+                if (config.email && config.email.enabled) {
                     sendMail(req);
                 }
                 return res.json({
