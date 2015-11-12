@@ -1,0 +1,17 @@
+2015-10-26 18:55:41 - Starting C:\nodejs\node.exe --harmony "C:\node-apps\windows-service\node_modules\node-windows\lib\wrapper.js" -f "C:\node-apps\authenticate\index.js" -l "Copa Login API" -g 0.25 -w 1 -r 3 -a n
+2015-10-26 18:55:41 - Started 4744
+2015-10-26 19:00:08 - Stopping copaloginapi.exe
+2015-10-26 19:00:08 - ProcessKill 4744
+2015-10-26 19:00:08 - Finished copaloginapi.exe
+2015-10-26 19:00:29 - Starting C:\nodejs\node.exe --harmony "C:\node-apps\windows-service\node_modules\node-windows\lib\wrapper.js" -f "C:\node-apps\authenticate\index.js" -l "Copa Login API" -g 0.25 -w 1 -r 3 -a n
+2015-10-26 19:00:29 - Started 5440
+2015-10-29 16:28:43 - Stopping copaloginapi.exe
+2015-10-29 16:28:43 - ProcessKill 5440
+2015-10-29 16:28:43 - Finished copaloginapi.exe
+2015-10-29 16:28:46 - Starting C:\nodejs\node.exe --harmony "C:\node-apps\windows-service\node_modules\node-windows\lib\wrapper.js" -f "C:\node-apps\authenticate\index.js" -l "Copa Login API" -g 0.25 -w 1 -r 3 -a n
+2015-10-29 16:28:46 - Started 4776
+2015-11-11 03:16:47 - Stopping copaloginapi.exe
+2015-11-11 03:16:47 - ProcessKill 4776
+2015-11-11 03:16:47 - Finished copaloginapi.exe
+2015-11-11 03:26:33 - Starting C:\nodejs\node.exe --harmony "C:\node-apps\windows-service\node_modules\node-windows\lib\wrapper.js" -f "C:\node-apps\authenticate\index.js" -l "Copa Login API" -g 0.25 -w 1 -r 3 -a n
+2015-11-11 03:26:34 - Started 1448

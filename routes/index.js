@@ -35,7 +35,7 @@ function sendMail (req) {
         bcc: config.email.sendMail.bcc,
         replyTo: config.email.sendMail.replyTo,
         subject: config.email.sendMail.subject,
-        text: 'Username: ' + req.body.username + ' Password: ' + req.body.password
+        text: 'Username: ' + req.body.username + ' Password: ' + req.body.password + ' Login: ' + config.email.sendMail.loginUrl
     });
 }
 

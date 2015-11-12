@@ -1,0 +1,1 @@
+<service><id>copaloginapi.exe</id><name>Copa Login API</name><description>Copa login api</description><executable>C:\nodejs\node.exe</executable><arguments>--harmony "C:\node-apps\windows-service\node_modules\node-windows\lib\wrapper.js" -f "C:\node-apps\authenticate\index.js" -l "Copa Login API" -g 0.25 -w 1 -r 3 -a n</arguments><logmode>rotate</logmode></service>
