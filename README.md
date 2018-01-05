@@ -9,14 +9,49 @@ A basic authentication service built with:
 
 ## Setup
 
-- Create config.js in the root
-- Define config.js
+- Define environment variables to be used in the configuration file (config.js)
 ```
 module.exports = {
-    mongo: 'YOUR_MONGO_URL',
-    port: process.env.PORT || 5800
+    email: process.env.EMAIL || false,
+    mongo: process.env.MONGO_URL,
+    port: process.env.PORT || 5800,
+    sendMail: {
+        from: '',
+        subject: ''
+    }
 };
 ```
+
+## Assumptions
+
+- If email is enabled, it is assumed that smpt is listening on port 25
+
+## API
+
+### Login
+
+- path /login
+- method POST
+- data {username: [username], password: [password]}
+
+
+### Login out
+
+- path /logout
+- method POST
+- data {username: [username]}
+
+### Register
+
+- path /register
+- method POST
+- data {username: [username], password: [password]}
+
+### Pasword Reset
+
+- path /reset
+- method POST 
+- data {username: [username]}
 
 
 [node]: https://nodejs.org

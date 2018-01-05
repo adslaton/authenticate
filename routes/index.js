@@ -3,28 +3,71 @@
 var express = require('express'),
     router = express.Router(),
     passport = require('passport'),
-    Account = require('../models/account');
+    Account = require('../models/account'),
+    nodemailer = require('nodemailer'),
+    smtpTransport = require('nodemailer-smtp-transport'),
+    config = require('../config.js'),
+    transporter;
+
+if (config.email && config.email.enabled) {
+    if (config.email.enableSMTP === 1) {
+        var options = {
+            host: config.email.transporter.host,
+            port: config.email.transporter.port,
+            auth: {
+                user: config.email.transporter.auth.user,
+                pass: config.email.transporter.auth.pass
+            }
+        };
+        transporter = nodemailer.createTransport(smtpTransport(options));
+    } else {
+        transporter = nodemailer.createTransport();
+    }
+}
+
+/**
+ * Sends an email to a user so they can retreive their password
+ */ 
+function sendMail (req) {
+    transporter.sendMail({
+        from: config.email.sendMail.from,
+        to: req.body.username,
+        bcc: config.email.sendMail.bcc,
+        replyTo: config.email.sendMail.replyTo,
+        subject: config.email.sendMail.subject,
+        text: 'Username: ' + req.body.username + ' Password: ' + req.body.password + ' Login: ' + config.email.sendMail.loginUrl
+    });
+}
 
 router.get('/_hc', function (req, res, next) {
-    res.status(200).json({status: 200});
-});
-
-router.get('/login', function (req, res) {
-    res.json(200, {user: req.user});
-});
-
-router.post('/login', passport.authenticate('local'), function (req, res) {
-    res.status(200).json({
+    res.json({
         status: 200,
-        authenticate: true,
-        username: req.body.username,
-        message: 'login'
+        email: config.email,
+        name: 'authenticate'
     });
 });
 
-router.get('/logout', function (req, res) {
+router.post('/login', function (req, res, next) {
+    Account.findOne(new Account({username: req.body.username}), req.body.password, function (err, account) {
+        if (err) {
+            return res.json({authenticate: false, login: false, error: err.message});
+        }
+
+        passport.authenticate('local', function(err, user, info) {
+            if (err) {
+                return res.json({authenticate: false, login: false, message: err.message});
+            }
+            if (!user) { 
+                return res.json({authenticate: false, login: false});
+            }
+            return res.json({authenticate: true, username: req.body.username, login: true});
+        })(req, res, next);
+    });
+});
+
+router.post('/logout', function (req, res) {
     req.logout();
-    res.status(200).json({
+    res.json({
         status: 200,
         authenticate: false,
         username: req.body.username,
@@ -32,20 +75,24 @@ router.get('/logout', function (req, res) {
     });
 });
 
-router.post('/register', function (req, res) {
+router.post('/register', function (req, res, next) {
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
         if (err) {
-            return res.json(500, {status: 500, account: account});
+            return res.json({authenticate: false, register: false, error: err.message});
         }
 
-        passport.authenticate('local')(req, res, function () {
-            return res.status(200).json({
-                status: 200,
-                authenticate: true,
-                username: req.body.username,
-                message: 'register'
-            });
-        });
+        passport.authenticate('local', function(err, user, info) {
+            if (err) {
+                return res.json({authenticate: false, register: false, message: err.message});
+            }
+            if (!user) { 
+                return res.json({authenticate: false, register: false});
+            }
+            if (config.email && config.email.enabled) {
+                sendMail(req);
+            }
+            return res.json({authenticate: true, register: true, username: req.body.username});
+        })(req, res, next);
     });
 });
 
@@ -57,6 +104,12 @@ router.post('/reset', function (req, res) {
             return res.status(500).json({
                 status: 500,
                 message: findError
+            });
+        }
+        if (!account) {
+            return res.status(404).json({
+                status: 404,
+                message: 'Account not found'
             });
         }
         account.setPassword(req.body.password, function (resetError, resetAccount) {
@@ -77,7 +130,10 @@ router.post('/reset', function (req, res) {
                         message: saveError
                     });
                 }
-                return res.status(200).json({
+                if (config.email && config.email.enabled) {
+                    sendMail(req);
+                }
+                return res.json({
                     status: 200,
                     authenticate: true,
                     username: username,
@@ -88,13 +144,5 @@ router.post('/reset', function (req, res) {
     });
 });
 
-
-
-router.post('/update/:id', function (req, res, next) {
-    var id = req.params.id,
-        body = req.body;
-
-    res.status(200).json({status: 200, id: id, data: body});
-});
 
 module.exports = router;
