@@ -1,13 +1,14 @@
 'use strict';
 
-var express = require('express'),
+const express = require('express'),
     router = express.Router(),
     passport = require('passport'),
     Account = require('../models/account'),
     nodemailer = require('nodemailer'),
     smtpTransport = require('nodemailer-smtp-transport'),
-    config = require('../config.js'),
-    transporter;
+    config = require('../config.js');
+
+let transporter;
 
 if (config.email && config.email.enabled) {
     if (config.email.enableSMTP === 1) {
@@ -27,7 +28,7 @@ if (config.email && config.email.enabled) {
 
 /**
  * Sends an email to a user so they can retreive their password
- */ 
+ */
 function sendMail (req) {
     transporter.sendMail({
         from: config.email.sendMail.from,
@@ -53,11 +54,11 @@ router.post('/login', function (req, res, next) {
             return res.json({authenticate: false, login: false, error: err.message});
         }
 
-        passport.authenticate('local', function(err, user, info) {
+        passport.authenticate('local', function (err, user, info) {
             if (err) {
                 return res.json({authenticate: false, login: false, message: err.message});
             }
-            if (!user) { 
+            if (!user) {
                 return res.json({authenticate: false, login: false});
             }
             return res.json({authenticate: true, username: req.body.username, login: true});
@@ -81,11 +82,11 @@ router.post('/register', function (req, res, next) {
             return res.json({authenticate: false, register: false, error: err.message});
         }
 
-        passport.authenticate('local', function(err, user, info) {
+        passport.authenticate('local', function (err, user, info) {
             if (err) {
                 return res.json({authenticate: false, register: false, message: err.message});
             }
-            if (!user) { 
+            if (!user) {
                 return res.json({authenticate: false, register: false});
             }
             if (config.email && config.email.enabled) {
