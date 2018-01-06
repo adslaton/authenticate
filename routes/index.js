@@ -56,6 +56,7 @@ router.post('/login', function (req, res, next) {
 
         passport.authenticate('local', function (err, user, info) {
             if (err) {
+                console.log(err);
                 return res.json({authenticate: false, login: false, message: err.message});
             }
             if (!user) {
@@ -84,6 +85,7 @@ router.post('/register', function (req, res, next) {
 
         passport.authenticate('local', function (err, user, info) {
             if (err) {
+                console.log(err);
                 return res.json({authenticate: false, register: false, message: err.message});
             }
             if (!user) {
