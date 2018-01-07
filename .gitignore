@@ -3,3 +3,4 @@ npm-debug.log
 config.js
 dump.rdb
 package-lock.json
+daemon
