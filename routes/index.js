@@ -11,18 +11,18 @@ const express = require('express'),
 let transporter;
 
 if (config.email && config.email.enabled) {
+    let options = {
+        host: config.email.transporter.host,
+        port: config.email.transporter.port
+    };
     if (config.email.enableSMTP === 1) {
-        var options = {
-            host: config.email.transporter.host,
-            port: config.email.transporter.port,
-            auth: {
-                user: config.email.transporter.auth.user,
-                pass: config.email.transporter.auth.pass
-            }
+        options.auth = {
+            user: config.email.transporter.auth.user,
+            pass: config.email.transporter.auth.pass
         };
         transporter = nodemailer.createTransport(smtpTransport(options));
     } else {
-        transporter = nodemailer.createTransport();
+        transporter = nodemailer.createTransport(options);
     }
 }
 
