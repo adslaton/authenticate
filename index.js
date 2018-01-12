@@ -40,6 +40,8 @@ app.use(function (req, res, next) {
 });
 app.use(passport.initialize());
 
+app.set('etag', false);
+
 // ===============PASSPORT=================
 // Use the LocalStrategy within Passport to login users.
 passport.use(new LocalStrategy(Account.authenticate()));
