@@ -54,19 +54,43 @@ router.post('/login', function (req, res, next) {
             return res.json({authenticate: false, login: false, error: err.message});
         }
 
-        passport.authenticate('local', function (err, user, info) {
-            if (err) {
-                console.log(err);
-                return res.json({authenticate: false, login: false, message: err.message});
+        // passport.authenticate('local', function (err, user, info) {
+        //     if (err) {
+        //         console.log(err);
+        //         return res.json({authenticate: false, login: false, message: err.message});
+        //     }
+        //     if (!user) {
+        //         return res.json({authenticate: false, login: false});
+        //     }
+        //     return res.json({authenticate: true, username: req.body.username, login: true});
+        // })(req, res, next);
+
+        account.setPassword(req.body.password, function (resetError, resetAccount) {
+            if (resetError) {
+                return res.status(500).json({
+                    status: 500,
+                    authenticate: false,
+                    username: req.body.username,
+                    message: resetError
+                });
             }
-            if (account) {
-              res.json({authenticate: true, username: req.body.username, login: true})
-            }
-            if (!user) {
-                return res.json({authenticate: false, login: false});
-            }
-            return res.json({authenticate: true, username: req.body.username, login: true});
-        })(req, res, next);
+            account.save(function (saveError) {
+                if (saveError) {
+                    return res.status(500).json({
+                        status: 500,
+                        authenticate: true,
+                        username: req.body.username,
+                        message: saveError
+                    });
+                }
+                return res.json({
+                    status: 200,
+                    authenticate: true,
+                    username: req.body.username,
+                    message: 'reset'
+                });
+            });
+        });
     });
 });
 
