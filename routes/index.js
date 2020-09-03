@@ -49,7 +49,7 @@ router.get('/_hc', function (req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
-    Account.findOne(new Account({username: req.body.username}), req.body.password, function (err, account) {
+    Account.findOne({username: req.body.username}, function (err, account) {
         if (err) {
             return res.json({authenticate: false, login: false, error: err.message});
         }
@@ -58,6 +58,9 @@ router.post('/login', function (req, res, next) {
             if (err) {
                 console.log(err);
                 return res.json({authenticate: false, login: false, message: err.message});
+            }
+            if (account) {
+              res.json({authenticate: true, username: req.body.username, login: true})
             }
             if (!user) {
                 return res.json({authenticate: false, login: false});
