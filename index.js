@@ -9,23 +9,7 @@ var express = require('express'),
     config = require('./config.js'),
     routes = require('./routes'),
     mongoose = require('mongoose'),
-    Account = require('./models/account'),
-    uriUtil = require('mongodb-uri'),
-    mongoOptions = {
-        server: {
-            socketOptions: {
-                keepAlive: 1,
-                connectTimeoutMS: 30000
-            }
-        },
-        replset: {
-            socketOptions: {
-                keepAlive: 1,
-                connectTimeoutMS: 30000
-            }
-        }
-    },
-    mongooseUri;
+    Account = require('./models/account');
 
 // ===============EXPRESS================
 // Configure Express
@@ -39,6 +23,7 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.set('etag', false);
 
@@ -49,8 +34,8 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Mongoose
-mongooseUri = uriUtil.formatMongoose(config.mongo);
-mongoose.connect(mongooseUri, mongoOptions);
+mongoose.connect(config.mongo, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useCreateIndex', true);
 
 // Routes
 app.use('/', routes);
