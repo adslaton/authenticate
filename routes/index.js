@@ -55,18 +55,31 @@ router.post('/login', function (req, res, next) {
         }
 
         passport.authenticate('local', function (err, user, info) {
+            let response = {authenticate: false, login: false};
             if (err) {
                 console.log(err);
-                return res.json({authenticate: false, login: false, message: err.message});
+                response.message; = err.message;
             }
             if (account) {
-              res.json({authenticate: true, username: req.body.username, login: true})
+                response.authenticate = true;
+                response.username = req.body.username;
+                response.login = true;
+                if (!user) {
+                  account.setPassword(req.body.password, function (resetError, resetAccount) {
+                      if (resetError) {
+                          console.error(resetError);
+                      }
+                      account.save(function (saveError) {
+                          if (saveError) {
+                              console.error(resetError);
+                          }
+                      });
+                  });
+                }
             }
-            if (!user) {
-                return res.json({authenticate: false, login: false});
-            }
-            return res.json({authenticate: true, username: req.body.username, login: true});
+            return res.json(response);
         })(req, res, next);
+
     });
 });
 
